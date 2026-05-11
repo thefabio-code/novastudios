@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaStudios Nexus | Jarvis Technical OS</title>
+    <style>
+        :root {
+            --accent: #00d2ff;
+            --danger: #800020;
+            --success: #00ff41;
+            --bg: #050505;
+            --panel: #0f0f12;
+            --border: #222;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: #e0e0e0; font-family: 'Fira Code', 'Cascadia Code', monospace; display: flex; height: 100vh; overflow: hidden; }
+
+        /* NAVEGACIÓN LATERAL: INFRAESTRUCTURA */
+        .sidebar { width: 340px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar-header { padding: 25px; background: linear-gradient(135deg, var(--danger), #200000); border-bottom: 1px solid var(--border); }
+        .host-section { padding: 20px; }
+        .host-category { font-size: 0.65rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .host-card { background: #15151a; border: 1px solid var(--border); padding: 12px; margin-bottom: 10px; border-radius: 6px; transition: 0.3s; cursor: help; }
+        .host-card:hover { border-color: var(--accent); background: #1a1a22; }
+        .price-chip { float: right; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: #222; color: var(--success); }
+
+        /* WORKSPACE PRINCIPAL */
+        .workspace { flex-grow: 1; display: flex; flex-direction: column; }
+
+        /* HUB DE LENGUAJES */
+        .lang-bar { height: 60px; background: #000; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; overflow-x: auto; white-space: nowrap; }
+        .lang-tag { padding: 6px 12px; background: #111; border: 1px solid #333; border-radius: 4px; font-size: 0.75rem; cursor: pointer; color: #777; transition: 0.2s; }
+        .lang-tag:hover { color: var(--accent); border-color: var(--accent); }
+        .lang-tag.active { background: var(--danger); color: #fff; border: none; font-weight: bold; }
+
+        /* DYNAMIC SANDBOX (PREVISUALIZADOR) */
+        .sandbox { height: 55%; display: flex; background: #111; }
+        .code-editor { flex: 1; display: flex; flex-direction: column; border-right: 2px solid var(--border); }
+        .live-preview { flex: 1; background: #fff; position: relative; }
+        textarea { width: 100%; flex-grow: 1; background: #080808; color: var(--success); border: none; padding: 20px; outline: none; font-size: 14px; line-height: 1.6; resize: none; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* JARVIS TERMINAL ENGINE */
+        .terminal { height: 45%; background: #000; display: flex; flex-direction: column; border-top: 2px solid var(--accent); }
+        .terminal-info { padding: 8px 20px; background: #0a0a0a; font-size: 0.7rem; color: var(--accent); border-bottom: 1px solid #111; display: flex; justify-content: space-between; }
+        #chat-flow { flex-grow: 1; padding: 20px; overflow-y: auto; font-size: 0.9rem; scroll-behavior: smooth; }
+        .input-container { padding: 15px; border-top: 1px solid #222; background: #050505; }
+        .input-container input { width: 100%; background: transparent; border: none; color: #fff; outline: none; font-family: inherit; font-size: 1rem; }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h2 style="font-size: 1.2rem;">NovaStudios</h2>
+        <p style="font-size: 0.6rem; opacity: 0.6;">INFRASTRUCTURE RADAR v8.0</p>
+    </div>
+    
+    <div class="host-section">
+        <div class="host-category">Free Deployment</div>
+        <div class="host-card">Aternos <span class="price-chip">FREE</span><br><small style="font-size: 0.65rem; color: #666;">Ideal para pruebas con Andrés/Juan</small></div>
+        <div class="host-card">Oracle Cloud ARM <span class="price-chip">FREE</span><br><small style="font-size: 0.65rem; color: #666;">24GB RAM / Servidor 24/7</small></div>
+        <div class="host-card">FalixNodes <span class="price-chip">FREE</span><br><small style="font-size: 0.65rem; color: #666;">Créditos por tiempo</small></div>
+
+        <div class="host-category" style="margin-top: 25px;">Premium Hosting</div>
+        <div class="host-card">Bloom.host <span class="price-chip" style="color: #ff4444;">RYZEN 9</span><br><small style="font-size: 0.65rem; color: #666;">Rendimiento máximo para NovaStudios</small></div>
+        <div class="host-card">PebbleHost <span class="price-chip" style="color: #ff4444;">STABLE</span><br><small style="font-size: 0.65rem; color: #666;">Económico y fiable</small></div>
+        <div class="host-card">Hetzner <span class="price-chip" style="color: #ff4444;">DEDICATED</span><br><small style="font-size: 0.65rem; color: #666;">Hardware dedicado profesional[cite: 1]</small></div>
+    </div>
+</aside>
+
+<main class="workspace">
+    <div class="lang-bar" id="hub-container">
+        <div class="lang-tag active" onclick="activateModule('web')">HTML / JS / CSS</div>
+        <!-- 50 lenguajes se inyectan aquí[cite: 1] -->
+    </div>
+
+    <div class="sandbox">
+        <div class="code-editor">
+            <div style="padding: 5px 20px; font-size: 0.65rem; background: #1a1a1a;">JARVIS EDITOR 4K</div>
+            <textarea id="main-editor" spellcheck="false" oninput="updateVisualizer()">
+<!-- EDITOR WEB DE NOVASTUDIOS -->
+<style>
+  body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .card { border: 2px solid #00d2ff; padding: 40px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,210,255,0.3); text-align: center; }
+  h1 { color: #00d2ff; }
+</style>
+
+<div class="card">
+  <h1>NovaStudios Master</h1>
+  <p>Fabio, el visualizador está listo para tus proyectos Front-End[cite: 1]</p>
+  <button onclick="alert('Compilación Exitosa')">Test Script</button>
+</div>
+            </textarea>
+        </div>
+        <div class="live-preview">
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <div class="terminal">
+        <div class="terminal-info">
+            <span>JARVIS TECHNICAL ENGINE v8.0.2</span>
+            <span>STATUS: READY FOR PRODUCTION[cite: 1]</span>
+        </div>
+        <div id="chat-flow">
+            <div style="color: var(--accent);">[JARVIS]: Saludos, Fabio. He cargado el entorno de alta especialización. Todos los protocolos de optimización han sido removidos para dar paso a la potencia total de NovaStudios. ¿Qué plugin o interfaz técnica auditaremos?[cite: 1]</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Consúltame sobre Spigot API, Errores de Consola, Hosting o Lógica Web..." onkeypress="if(event.key === 'Enter') sendToJarvis()">
+        </div>
+    </div>
+</main>
+
+<script src="jarvis_engine.js"></script>
+</body>
+</html>
